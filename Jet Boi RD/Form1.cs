@@ -55,5 +55,10 @@ namespace Jet_Boi_RD
         {
             Screens.GameScreen.xmlSave();
         }
+
+        public void close()
+        {
+            this.Close();
+        }
     }
 }

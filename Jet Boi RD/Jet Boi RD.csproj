@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +45,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\coin.cs" />
@@ -142,8 +144,28 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\music.mp3" />
+    <Content Include="bin\Debug\alert.mp3" />
+    <Content Include="bin\Debug\broken.mp3" />
+    <Content Include="bin\Debug\death.mp3" />
+    <Content Include="bin\Debug\player1.xml" />
     <Content Include="playerBase.xml" />
+    <None Include="Resources\broken.mp3" />
+    <None Include="Resources\alert.mp3" />
+    <None Include="Resources\death.mp3" />
+    <None Include="Resources\glass-breaks.mp3" />
+    <None Include="Resources\metalgearsolid-4-alert-sound.mp3" />
+    <None Include="Resources\roblox-death-sound_1.mp3" />
+    <None Include="Resources\i need jesus but suit.gif" />
+    <None Include="Resources\i need jesus clone.gif" />
+    <None Include="Resources\laserV.png" />
+    <None Include="Resources\laserH.png" />
+    <None Include="Resources\teleport boi-1.png.png" />
+    <None Include="Resources\New Piskel.gif" />
+    <None Include="Resources\i need jesus.gif" />
+    <None Include="Resources\grassy boi 3.0.jpg" />
     <None Include="Resources\DinoSprites_mort.gif" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Drawing.Imaging;
+using System.Media;
+using System.IO;
+
 
 namespace Jet_Boi_RD.Screens
 {
@@ -15,75 +19,126 @@ namespace Jet_Boi_RD.Screens
     {
         #region globals
         public bool up = false;
-        public bool grounded = true;
+        public bool grounded = true; // for gravity
         public bool jumping = false;
-        Classes.Player player = new Classes.Player(50, 0);
+
+        Classes.Player player = new Classes.Player(50, 0); //player
         Pen playerPen = new Pen(Color.White);
-        SolidBrush coinBrush = new SolidBrush(Color.Gold);
-        public const int pheight = 50;
-        public const int pwidth = 20;
-        const int longLaser = 200;
+
+        SolidBrush coinBrush = new SolidBrush(Color.Yellow); // for coins
+
+        public const int pheight = 120;
+        public const int pwidth = 80;
+        const int longLaser = 200; //height width const
         const int midLaser = 150;
         const int smallLaser = 100;
         const int laserWidth = 50;
-        int airDownFrames = 0;
-        Form form;
-        int timeBtwnLasers = 240;
+
+        int airDownFrames = 0; // for gravity
+
+        int timeBtwnLasers = 240; 
         int tick = 0;
         Random r = new Random();
-        List<Classes.laser> lasers = new List<Classes.laser>();
-        List<Classes.coin> coins = new List<Classes.coin>();
-        public static int backgroundMoveSpd = 8;
+        
+        public static int backgroundMoveSpd = 8; // scroll spd
+
+        //things to remove
         Classes.laser laserToRemove;
         Classes.coin coinToRemove;
         Classes.mechToken MTokenToRemove;
         Classes.rocket rocketToRemove;
-        public static long dist;
-        public static long maxDist;
-        public static float actualDist;
-        public static int coinScore = 0;
-        int coinChance = 30;
-        bool endGame = false;
-        int bounce;
-        bool bounceUp = true;
-        bool started = false;
 
-        bool spawnBarrage = false;
+        public static long dist; // pixel count
+        public static long maxDist; 
+        public static float actualDist; //actual distance
+
+        public static int coinScore = 0; 
+        int coinChance = 30;
+        bool endGame = false; // when game is slowing down and stopping
+
+        int bounce; // on death, adds "bounce"
+        bool bounceUp = true; 
+
+        bool started = false; // game started
+
+        int cloudX = 0; // for scrolling clouds
+
+        bool spawnBarrage = false; // for rockets
         int barrageSpawns = 0;
+        
+
+        public bool toClearLsers = false; 
+
+        public bool keydown = false; // used to check if the key was pushed, mainly for teleporter
+
+        int spdStorage = 0; // used when the player dies and chooses to reveive - it restores speed
+
+        public static string curntMech = "none"; 
+
+        public static bool abort = false; // if you don't have a upgrade purchased, it will stop the creation of a token
+
+        public bool gravDown = true; //for gravity suit
+
+        public bool teleporterUp = false; // for teleporter
+        public int teleporterMarkerY = 0; // 
+
+        public int upFrames = 0; // for super jump
+
+        //image animations
+        Image gifImage = Properties.Resources.character;
+        FrameDimension dimension;
+        Image gImage = Properties.Resources.gsuit;
+        FrameDimension gdimension;   
+        Image spImage = Properties.Resources.superJumper;
+        FrameDimension spdimension;
+        int frameCount;
+        int frame = 0;
+
+        //all the music and sounds
+        System.Windows.Media.MediaPlayer death = new System.Windows.Media.MediaPlayer();
+        System.Windows.Media.MediaPlayer alert = new System.Windows.Media.MediaPlayer();
+        System.Windows.Media.MediaPlayer broken  = new System.Windows.Media.MediaPlayer();
+        System.Windows.Media.MediaPlayer music = new System.Windows.Media.MediaPlayer();
+
+        //all the object lists, and shop lists
         public static Dictionary<string, bool> mechs = new Dictionary<string, bool>();
         public static Dictionary<string, bool> upgrades = new Dictionary<string, bool>();
         public static Dictionary<string, bool> upgradesActv = new Dictionary<string, bool>();
         public static Dictionary<string, Dictionary<string, bool>> mechUpgs = new Dictionary<string, Dictionary<string, bool>>();
         static List<Classes.mechToken> MTokens = new List<Classes.mechToken>();
         static List<Classes.rocket> rockets = new List<Classes.rocket>();
-
-        public bool toClearLsers = false;
-
-        public bool keydown = false;
-
-        int spdStorage = 0;
-
-        public static string curntMech = "none";
-        public static bool abort = false;
-
-        public bool gravDown = true; //for gravity suit
-
-        public bool teleporterUp = false; // for teleporter
-        public int teleporterMarkerY = 0;
-
-        public int upFrames = 0; // for super jump
+        List<Classes.laser> lasers = new List<Classes.laser>();
+        List<Classes.coin> coins = new List<Classes.coin>();
 
 
         #endregion
         public GameScreen()
         {
             InitializeComponent();
+            cloudX = this.Width;
+
+            //animations & music
+            dimension = new FrameDimension(gifImage.FrameDimensionsList[0]);
+            gdimension = new FrameDimension(gImage.FrameDimensionsList[0]);
+            spdimension = new FrameDimension(spImage.FrameDimensionsList[0]);
+            frameCount = gifImage.GetFrameCount(dimension);
+            death.Open(new Uri(Application.StartupPath + "/death.mp3"));
+            death.Volume = 1;
+            alert.Open(new Uri(Application.StartupPath + "/alert.mp3"));
+            broken.Open(new Uri(Application.StartupPath + "/broken.mp3"));
+            broken.Volume = 0.1d;
+            music.Open(new Uri(Application.StartupPath + "/music.mp3"));
+            music.Volume = 0.25;
+
             backgroundMoveSpd = 8;
+
             lasers.Clear();
-            rockets.Clear();
+            rockets.Clear(); //clears objects
             MTokens.Clear();
+
             coinChance = 30;
-            if (!Form1.start)
+
+            if (!Form1.start) // adds to shop lists for xmlload, only onstart
             {
                 mechs.Add("superJump", false);
                 mechs.Add("teleporter", false);
@@ -110,10 +165,12 @@ namespace Jet_Boi_RD.Screens
                 mechUpgs.Add("gravity", c);
                 Form1.start = true;
             }
-            //xmlSave();
-            xmlLoad();
-            Refresh();
-            gameTimer.Enabled = false;
+            
+             xmlLoad();
+    
+            Refresh(); 
+
+            gameTimer.Enabled = false; //pauses until space is pressed
         }
 
         public static void xmlLoad()
@@ -124,35 +181,41 @@ namespace Jet_Boi_RD.Screens
             reader.ReadToFollowing("coin");
             coinScore = Convert.ToInt16(reader.ReadString());
             reader.ReadToFollowing("maxDist");
-            maxDist = Convert.ToInt64(reader.ReadString());
-            //Grabs all the blocks for the current level and adds them to the list
+            maxDist = Convert.ToInt64(reader.ReadString());        
             Dictionary<string, bool> upgd = new Dictionary<string, bool>();
-            foreach (KeyValuePair<string, bool> b in upgrades)
+
+            foreach (KeyValuePair<string, bool> b in upgrades) // reads upgrades
             {
                 reader.ReadToFollowing("upgrade");
                 string key = reader.GetAttribute("name");
                 upgd[key] = XmlConvert.ToBoolean(reader.GetAttribute("value").ToLower());
             }
+
             upgrades = upgd;
             Dictionary<string, bool> upgdA = new Dictionary<string, bool>();
+
             foreach (KeyValuePair<string, bool> b in upgradesActv)
             {
                 reader.ReadToFollowing("upgrade");
                 string key = reader.GetAttribute("name");
                 upgdA[key] = XmlConvert.ToBoolean(reader.GetAttribute("value").ToLower());
             }
+
             upgradesActv = upgdA;
             reader.ReadToFollowing("mechs");
             Dictionary<string, bool> mch = new Dictionary<string, bool>();
-            foreach (KeyValuePair<string, bool> b in mechs)
+
+            foreach (KeyValuePair<string, bool> b in mechs) // reads mechs
             {
                 reader.ReadToFollowing(b.Key);
                 mch[b.Key] = XmlConvert.ToBoolean(reader.ReadString().ToLower());
             }
+
             mechs = mch;
             reader.ReadToFollowing("mechUpgs");
             Dictionary<string, Dictionary<string, bool>> mchUpgd = new Dictionary<string, Dictionary<string, bool>>();
-            foreach (KeyValuePair<string, Dictionary<string, bool>> c in mechUpgs)
+
+            foreach (KeyValuePair<string, Dictionary<string, bool>> c in mechUpgs) //obsolete
             {
 
                 reader.ReadToFollowing(c.Key);
@@ -161,23 +224,22 @@ namespace Jet_Boi_RD.Screens
                 {
 
                     reader.ReadToFollowing(b.Key);
-
                     x.Add(b.Key, XmlConvert.ToBoolean(reader.ReadString().ToLower()));
 
                 }
+
                 mchUpgd[c.Key] = x;
             }
+
             mechUpgs = mchUpgd;
             reader.Close();
+
+            //death.Stop();
         }
+
         public static void xmlSave()
         {
-            /*
-            highscores.Add(score);
-            //can be used to create farthest distance
-            highscores.Sort();
-            highscores.Reverse();
-            */
+            //writes all things to xml
             XmlWriter writer = XmlWriter.Create("player1.xml", null);
             writer.WriteStartElement("player");
             writer.WriteString("\n");
@@ -187,6 +249,7 @@ namespace Jet_Boi_RD.Screens
             writer.WriteString("\n");
             writer.WriteStartElement("upgradesPurch");
             writer.WriteString("\n");
+
             foreach (KeyValuePair<string, bool> b in upgrades)
             {
                 writer.WriteStartElement("upgrade");
@@ -195,10 +258,12 @@ namespace Jet_Boi_RD.Screens
                 writer.WriteEndElement();
                 writer.WriteString("\n");
             }
+
             writer.WriteEndElement();
             writer.WriteString("\n");
             writer.WriteStartElement("upgradesActv");
             writer.WriteString("\n");
+
             foreach (KeyValuePair<string, bool> b in upgradesActv)
             {
                 writer.WriteStartElement("upgrade");
@@ -207,10 +272,12 @@ namespace Jet_Boi_RD.Screens
                 writer.WriteEndElement();
                 writer.WriteString("\n");
             }
+
             writer.WriteEndElement();
             writer.WriteString("\n");
             writer.WriteStartElement("mechs");
             writer.WriteString("\n");
+
             foreach (KeyValuePair<string, bool> b in mechs)
             {
                 writer.WriteStartElement(b.Key);
@@ -218,14 +285,17 @@ namespace Jet_Boi_RD.Screens
                 writer.WriteEndElement();
                 writer.WriteString("\n");
             }
+
             writer.WriteEndElement();
             writer.WriteString("\n");
             writer.WriteStartElement("mechUpgs");
             writer.WriteString("\n");
+
             foreach (KeyValuePair<string, Dictionary<string, bool>> c in mechUpgs)
             {
                 writer.WriteStartElement(c.Key);
                 writer.WriteString("\n");
+
                 foreach (KeyValuePair<string, bool> b in c.Value)
                 {
                     writer.WriteStartElement(b.Key);
@@ -233,44 +303,47 @@ namespace Jet_Boi_RD.Screens
                     writer.WriteEndElement();
                     writer.WriteString("\n");
                 }
+
                 writer.WriteEndElement();
                 writer.WriteString("\n");
             }
+
             writer.WriteEndElement();
             writer.WriteString("\n");
-
             writer.Close();
 
         }
 
         public void GameOver()
         {
-            if (dist > maxDist) maxDist = dist;
-            xmlSave();
-            gameTimer.Stop();
+            if (dist > maxDist) maxDist = dist; // if you broke record, replace it
 
-            if (coinScore >= 0)
+            xmlSave();
+            gameTimer.Stop(); // stop doing things
+
+            if (coinScore >= 0) 
             {
-                revivePopup rp = new revivePopup();
-                rp.Location = this.FindForm().Location;
-                DialogResult result = rp.ShowDialog();
+                revivePopup.dist = (int)(dist / 100); //sets the dist you travelled
+                revivePopup rp = new revivePopup();   //then opens a new popup    
+                rp.Location = this.FindForm().Location; // places in proper loc
+                DialogResult result = rp.ShowDialog(); //show
                
-                if (result == DialogResult.Yes)
+                if (result == DialogResult.Yes) // if revive button pushed,
                 {
-                    gameTimer.Enabled = true;
-                    backgroundMoveSpd = spdStorage;
-                    timeBtwnLasers = 120;
-                    coinScore -= 250;
-                    endGame = false;
-                    lasers.Clear();
+                    gameTimer.Enabled = true; // renable timer
+                    backgroundMoveSpd = spdStorage; // restore spd
+                    timeBtwnLasers = 120; // reset this
+                    coinScore -= 250; // remove coins
+                    endGame = false; // reset
+                    lasers.Clear(); //reset
                 }
-                else if (result == DialogResult.No)
+                else if (result == DialogResult.No) // if shop button
                 {
-                    Form1.switchScreen(this, "shop");
-                    actualDist = 0;
+                    Form1.switchScreen(this, "shop"); //switch to shop
+                    actualDist = 0; //reset dist
                     dist = 0;
                 }
-                else if (result == DialogResult.OK)
+                else if (result == DialogResult.OK) // obselete
                 {
                     ShopScreen.switchS = true;
                     Form1.switchScreen(this, "shop");
@@ -278,8 +351,12 @@ namespace Jet_Boi_RD.Screens
                     dist = 0;
                     actualDist = 0;
                 }
+                else if (result == DialogResult.Abort)
+                {
+                    FindForm().Close(); // close game
+                }
             }
-            else
+            else //obselete
             {
                 Form1.switchScreen(this, "shop");
                 
@@ -288,9 +365,10 @@ namespace Jet_Boi_RD.Screens
 
         private void GameTimer_Tick(object sender, EventArgs e)
         {
-            tick++;
-            dist += backgroundMoveSpd;
-            actualDist = dist / 100;
+            tick++; // tick
+            cloudX -= backgroundMoveSpd; // move cloud
+            dist += backgroundMoveSpd; // add to dist
+            actualDist = dist / 100; // actual distance travelled
             if (endGame && tick % 15 == 0)
             {
                 if (backgroundMoveSpd > 0) backgroundMoveSpd--;
@@ -328,14 +406,19 @@ namespace Jet_Boi_RD.Screens
             }
             if (tick == 180)
             {
-                lasers.Add(new Classes.laser(this.Width, 10, midLaser, laserWidth));
+                lasers.Add(new Classes.laser(this.Width, 10, midLaser, laserWidth, Properties.Resources.laserV));
             }
             else if (tick % timeBtwnLasers == 0 && !endGame)
             {
                 generateLaser(player.y);
             }
             if (tick % 1200 == 0 && coinChance < 35 && !endGame) coinChance += 5;
-            if (tick % 720 == 0 && !endGame)
+
+            if (tick % 240 == 0)
+            {
+                cloudX = this.Width;
+            }
+            if (tick % 550 == 0 && !endGame)
             {
 
                 if (backgroundMoveSpd < 20)
@@ -346,9 +429,9 @@ namespace Jet_Boi_RD.Screens
 
                 //if (timeBtwnLasers > 15) timeBtwnLasers -= 15;
             }
-            if (tick % 120 == 0)
+            if (tick % 240 == 0)
             {
-                if (timeBtwnLasers > 20) timeBtwnLasers -= 5;
+                if (timeBtwnLasers > 20) timeBtwnLasers -= 15;
                 else
                 {
                     //timeBtwnLasers = 5;
@@ -362,14 +445,16 @@ namespace Jet_Boi_RD.Screens
                     barrageSpawns = 0;
                 }
 
-                Classes.rocket rc = new Classes.rocket(this.Width, player.y + 25);
+                Classes.rocket rc = new Classes.rocket(this.Width - 80, player.y + 25);
+                alert.Stop();
+                alert.Play();
                 rockets.Add(rc);
 
 
             }
             if(spawnBarrage && tick % 30 == 0 && barrageSpawns < 5)
             {
-                Classes.rocket rc = new Classes.rocket(this.Width, player.y + 25);
+                Classes.rocket rc = new Classes.rocket(this.Width - 80, player.y + 25);
                 rockets.Add(rc);
                 barrageSpawns++;
             }
@@ -406,6 +491,7 @@ namespace Jet_Boi_RD.Screens
 
         private void GameScreen_KeyDown(object sender, KeyEventArgs e)
         {
+            
             if (endGame)
             {
 
@@ -413,6 +499,7 @@ namespace Jet_Boi_RD.Screens
             if (e.KeyCode == Keys.Q) coinScore += 50;
             else if (e.KeyCode == Keys.Space && !endGame && curntMech != "gravity")
             {
+                
                 if (grounded) // boost
                 {
                     grounded = false;
@@ -459,35 +546,64 @@ namespace Jet_Boi_RD.Screens
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
+            SolidBrush g = new SolidBrush(Color.Green);
+            SolidBrush b = new SolidBrush(Color.SkyBlue);
+            e.Graphics.FillRectangle(g, 0, this.Height - 100, this.Width, 100);
+            e.Graphics.FillRectangle(b, 0, 0, this.Width, this.Height - 100);
+
+            e.Graphics.DrawRectangle(new Pen(Color.Black), cloudX, 50, 100, 50);
             if(!started)
             {
                 Font s = new Font(Font.FontFamily, 20);
 
-                e.Graphics.DrawString("Press Space to Play!", s, new SolidBrush(Color.White), (this.Width - 300) / 2, 100);
+                e.Graphics.DrawString("Press Space to Play!", s, new SolidBrush(Color.Black), (this.Width - 300) / 2, 100);
             }
+            if (!up && !grounded) frame = 9;
+            if (up && curntMech != "superJump") frame = 8;
+            if (grounded && !up && tick % 4 == 0) frame++;
+            if (curntMech == "superJump" && tick % 4 == 0) frame++;
+            if (endGame) frame = 10;
             switch (curntMech)
             {
+                
                 case "none":
-                    //e.Graphics.DrawRectangle(playerPen, player.hb);
+                    frameCount = gifImage.GetFrameCount(dimension);
+                    if (frame >= 8 && grounded && !up && !endGame) frame = 0;
+                    e.Graphics.DrawImage(gifImage, player.hb);
+                    gifImage.SelectActiveFrame(dimension, frame);
+                    
                     break;
                 case "teleporter":
+                    e.Graphics.DrawImage(Properties.Resources.teleporter, player.hb.X, player.hb.Y);
                     break;
                 case "superJump":
+                    frameCount = spImage.GetFrameCount(dimension);
+                    if (frame >= 8 && !endGame) frame = 0;
+                    e.Graphics.DrawImage(spImage, player.x, player.y);
+                    spImage.SelectActiveFrame(spdimension, frame);
+
                     break;
                 case "gravity":
+                    frameCount = gImage.GetFrameCount(dimension);
+                    if (frame >= 8 && grounded && !up && !endGame) frame = 0;
+                    e.Graphics.DrawImage(gImage, player.x, player.y);
+                    gImage.SelectActiveFrame(gdimension, frame);
+
                     break;
 
             }
 
             
-            e.Graphics.DrawRectangle(playerPen, player.hb);
+            
             if (curntMech == "teleporter") teleporterDraw(e.Graphics, teleporterMarkerY);
             foreach (Classes.rocket l in rockets)
             {
                 if (l.launchingRocket && l.launchingTicks < 180)
                 {
                     l.launchingTicks++;
-                    e.Graphics.DrawRectangle(new Pen(Color.White), this.Width - 30, player.hb.Top + 25, 30, 25);
+                    l.hb.Y = player.y + 25;
+                    l.y = player.y + 25;
+                    e.Graphics.DrawImage(l.i, l.hb);
                 }
                 if(l.launchingTicks == 180 && l.launchingRocket)
                 {
@@ -498,7 +614,7 @@ namespace Jet_Boi_RD.Screens
                 if (!l.launchingRocket)
                 {                        
                     l.move();
-                    e.Graphics.DrawRectangle(playerPen, l.hb);
+                    e.Graphics.DrawImage(l.i, l.hb);
                     if (l.hb.Right <= 0) rocketToRemove = l;
                     if (player.hb.IntersectsWith(l.hb))
                     {
@@ -506,11 +622,15 @@ namespace Jet_Boi_RD.Screens
                         if (!endGame && curntMech == "none")
                         {
                             endGame = true;
+                            death.Stop();
+                            death.Play();
                             spdStorage = backgroundMoveSpd;
                             bounce = (this.Height - player.y) / 2;
                         }
                         else if (curntMech != "none")
                         {
+                            broken.Stop();
+                            broken.Play();
                             toClearLsers = true;
                             grounded = false;
                             curntMech = "none";
@@ -523,19 +643,23 @@ namespace Jet_Boi_RD.Screens
             foreach (Classes.laser l in lasers)
             {
                 l.move();
-                e.Graphics.DrawRectangle(playerPen, l.hb);
+                e.Graphics.DrawImage(l.i, l.hb);
                 if (l.hb.Right <= 0) laserToRemove = l;
                 if (player.hb.IntersectsWith(l.hb))
                 {
                     //GameOver();
                     if (!endGame && curntMech == "none")
                     {
-                        spdStorage = backgroundMoveSpd;
+                        death.Stop();
+                        death.Play();
+                        spdStorage = backgroundMoveSpd;                      
                         endGame = true;
                         bounce = (this.Height - player.y) / 2;
                     }
                     else if (curntMech != "none")
                     {
+                        broken.Stop();
+                        broken.Play();
                         toClearLsers = true;
                         grounded = false;
                         curntMech = "none";
@@ -577,6 +701,7 @@ namespace Jet_Boi_RD.Screens
                     curntMech = m.type;
                     lasers.Clear();
                     rockets.Clear();
+                    broken.Play();
                 }
                 else
                 {
@@ -607,8 +732,10 @@ namespace Jet_Boi_RD.Screens
                     e.Graphics.DrawString(s, f, new SolidBrush(Color.Black), m.hb.X + 10, m.hb.Y + 10);
                 }
             }
-            e.Graphics.DrawString("Coins " + coinScore, Font, new SolidBrush(Color.White), 0, 10);
-            e.Graphics.DrawString("Distance " + actualDist, Font, new SolidBrush(Color.White), 0, 20);
+            Font fr = new Font("Arial", 16);
+            
+            e.Graphics.DrawString("Coins " + coinScore, fr, new SolidBrush(Color.Black), 0, 10);
+            e.Graphics.DrawString("Distance " + actualDist +"m", fr, new SolidBrush(Color.Black), 0, 30);
             RemoveLaser(laserToRemove);
             RemoveCoin(delete);
             RemoveMToken(MTokenToRemove);
@@ -645,8 +772,16 @@ namespace Jet_Boi_RD.Screens
         {
             player.y = this.Height - pheight;
             player.hb.Y = this.Height - pheight;
-        }
+            music.Stop();
+            music.Play();
+            music.MediaEnded += music_Loop;
 
+        }
+        private void music_Loop(object sender, EventArgs e)
+        {
+            music.Stop();
+            music.Play();
+        }
         private void GameScreen_KeyUp(object sender, KeyEventArgs e)
         {
             up = false;
@@ -702,13 +837,16 @@ namespace Jet_Boi_RD.Screens
             int w = 0;
             int l = 0;
             int y = 0;
+            Image i = Properties.Resources.laserV;
             switch (r.Next(0, 2))
             {
                 case 0: // vert rect
+                    i = Properties.Resources.laserV;
                     switch (r.Next(0, 3))
                     {
                         case 0:
                             l = smallLaser;
+                            
                             break;
                         case 1:
                             l = midLaser;
@@ -722,6 +860,7 @@ namespace Jet_Boi_RD.Screens
                     w = laserWidth;
                     break;
                 case 1: // horiz rect
+                    i = Properties.Resources.laserH;
                     switch (r.Next(0, 3))
                     {
                         case 0:
@@ -742,7 +881,7 @@ namespace Jet_Boi_RD.Screens
             if (py <= l) y = 0;
             else y = py - l / 2;
 
-            lasers.Add(new Classes.laser(this.Width, y, l, w));
+            lasers.Add(new Classes.laser(this.Width, y, l, w, i));
         }
 
         public void teleporterMove(int y)
@@ -765,7 +904,7 @@ namespace Jet_Boi_RD.Screens
             if (teleporterUp) y -= 10;
             else y += 10;
 
-            g.DrawRectangle(new Pen(Color.White), player.x, y, pwidth, pheight);
+            g.DrawRectangle(new Pen(Color.Black), player.x, y, pwidth, pheight);
             teleporterMarkerY = y;
         }
 
@@ -784,6 +923,7 @@ namespace Jet_Boi_RD.Screens
                         break;
                     case "gravity":
                         gravDown = !gravDown;
+                        gImage.RotateFlip(RotateFlipType.RotateNoneFlipY);
                         airDownFrames = 0;
                         break;
                 }
@@ -809,6 +949,10 @@ namespace Jet_Boi_RD.Screens
                     if (player.hb.Bottom < this.Height)
                     {
                         player.move(2 + (int)Math.Floor(Math.Pow(airDownFrames, 2) / down));
+                    }
+                    else
+                    {
+                        player.hb.Y = this.Height - pheight;
                     }
 
 

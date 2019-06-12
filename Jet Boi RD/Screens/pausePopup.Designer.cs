@@ -31,6 +31,7 @@
             this.pausedLabel = new System.Windows.Forms.Label();
             this.retryButton = new System.Windows.Forms.Button();
             this.continueButton = new System.Windows.Forms.Button();
+            this.exitButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // pausedLabel
@@ -68,12 +69,25 @@
             this.continueButton.UseVisualStyleBackColor = false;
             this.continueButton.Click += new System.EventHandler(this.Yes_Click);
             // 
+            // exitButton
+            // 
+            this.exitButton.BackColor = System.Drawing.Color.LightSlateGray;
+            this.exitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.exitButton.Location = new System.Drawing.Point(513, 417);
+            this.exitButton.Name = "exitButton";
+            this.exitButton.Size = new System.Drawing.Size(379, 120);
+            this.exitButton.TabIndex = 97;
+            this.exitButton.Text = "Exit Game";
+            this.exitButton.UseVisualStyleBackColor = false;
+            this.exitButton.Click += new System.EventHandler(this.ExitButton_Click);
+            // 
             // pausePopup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1419, 602);
+            this.Controls.Add(this.exitButton);
             this.Controls.Add(this.pausedLabel);
             this.Controls.Add(this.retryButton);
             this.Controls.Add(this.continueButton);
@@ -90,5 +104,6 @@
         private System.Windows.Forms.Label pausedLabel;
         private System.Windows.Forms.Button retryButton;
         private System.Windows.Forms.Button continueButton;
+        private System.Windows.Forms.Button exitButton;
     }
 }

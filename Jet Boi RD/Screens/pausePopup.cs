@@ -26,5 +26,10 @@ namespace Jet_Boi_RD.Screens
         {
             DialogResult = DialogResult.No;
         }
+
+        private void ExitButton_Click(object sender, EventArgs e)
+        {
+            Form1.form.Close();
+        }
     }
 }

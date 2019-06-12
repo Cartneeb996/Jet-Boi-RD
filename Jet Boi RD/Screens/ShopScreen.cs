@@ -19,7 +19,7 @@ namespace Jet_Boi_RD.Screens
         public ShopScreen()
         {
             InitializeComponent();
-            teleporterInfoLabel.Visible = !GameScreen.mechs["teleporter"];
+            
             teleporterButton.Visible = !GameScreen.mechs["teleporter"];
             teleportPriceLabel.Visible = !GameScreen.mechs["teleporter"];
 
@@ -41,7 +41,7 @@ namespace Jet_Boi_RD.Screens
             jammerBoiButton.Visible = !GameScreen.upgrades["jammer"];
             jamerPriceLabel.Visible = !GameScreen.upgrades["jammer"];
 
-
+            coinLabel.Text = "Coins: " + GameScreen.coinScore;
 
 
 

@@ -11,8 +11,8 @@ namespace Jet_Boi_RD.Classes
     {
         public int x, y;
         public Rectangle hb;
-        public const int height = 50;
-        public const int width = 20;
+        public const int height = 120;
+        public const int width = 80;
         public Player(int _x, int _y)
         {
             x = _x;

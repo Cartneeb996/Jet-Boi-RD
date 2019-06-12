@@ -12,9 +12,12 @@ namespace Jet_Boi_RD.Screens
 {
     public partial class revivePopup : Form
     {
+        public static int dist;
         public  revivePopup()
         {
             InitializeComponent();
+            youFlewLabel.Text = "You Flew\n" + dist + "m\nFurthest Flown: " + GameScreen.maxDist/100 + "m";
+            coindisp.Text = "Coins: " + GameScreen.coinScore;
         }
 
         private void Yes_Click(object sender, EventArgs e)
@@ -30,6 +33,10 @@ namespace Jet_Boi_RD.Screens
         private void HomeButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+        }
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Abort;
         }
     }
 }

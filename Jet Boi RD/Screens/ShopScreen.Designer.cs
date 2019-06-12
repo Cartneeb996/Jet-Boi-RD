@@ -47,7 +47,7 @@
             this.gravBoiPriceLabel = new System.Windows.Forms.Label();
             this.xRayPriceLabel = new System.Windows.Forms.Label();
             this.jamerPriceLabel = new System.Windows.Forms.Label();
-            this.teleporterInfoLabel = new System.Windows.Forms.Label();
+            this.coinLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // backButton
@@ -96,7 +96,7 @@
             this.teleporterButton.TabIndex = 0;
             this.teleporterButton.Text = "Teleport Boi RD";
             this.teleporterButton.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.teleporterButton.UseVisualStyleBackColor = true;
+            this.teleporterButton.UseVisualStyleBackColor = false;
             this.teleporterButton.Click += new System.EventHandler(this.TeleporterButton_Click);
             // 
             // airBoiButton
@@ -148,7 +148,7 @@
             this.gravitySuitButton.TabIndex = 1;
             this.gravitySuitButton.Text = "Gravity Suit Boi RD";
             this.gravitySuitButton.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gravitySuitButton.UseVisualStyleBackColor = true;
+            this.gravitySuitButton.UseVisualStyleBackColor = false;
             this.gravitySuitButton.Click += new System.EventHandler(this.GravitySuitButton_Click);
             // 
             // hogButton
@@ -161,7 +161,7 @@
             this.hogButton.TabIndex = 2;
             this.hogButton.Text = "Hog Boi RD";
             this.hogButton.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.hogButton.UseVisualStyleBackColor = true;
+            this.hogButton.UseVisualStyleBackColor = false;
             this.hogButton.Click += new System.EventHandler(this.HogButton_Click);
             // 
             // jammerBoiButton
@@ -277,20 +277,21 @@
             this.jamerPriceLabel.Text = "500";
             this.jamerPriceLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // teleporterInfoLabel
+            // coinLabel
             // 
-            this.teleporterInfoLabel.BackColor = System.Drawing.Color.LightSlateGray;
-            this.teleporterInfoLabel.Location = new System.Drawing.Point(108, 162);
-            this.teleporterInfoLabel.Name = "teleporterInfoLabel";
-            this.teleporterInfoLabel.Size = new System.Drawing.Size(100, 23);
-            this.teleporterInfoLabel.TabIndex = 17;
+            this.coinLabel.AutoSize = true;
+            this.coinLabel.ForeColor = System.Drawing.Color.White;
+            this.coinLabel.Location = new System.Drawing.Point(15, 13);
+            this.coinLabel.Name = "coinLabel";
+            this.coinLabel.Size = new System.Drawing.Size(0, 13);
+            this.coinLabel.TabIndex = 18;
             // 
             // ShopScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.Controls.Add(this.teleporterInfoLabel);
+            this.Controls.Add(this.coinLabel);
             this.Controls.Add(this.jamerPriceLabel);
             this.Controls.Add(this.xRayPriceLabel);
             this.Controls.Add(this.gravBoiPriceLabel);
@@ -338,6 +339,6 @@
         private System.Windows.Forms.Label gravBoiPriceLabel;
         private System.Windows.Forms.Label xRayPriceLabel;
         private System.Windows.Forms.Label jamerPriceLabel;
-        private System.Windows.Forms.Label teleporterInfoLabel;
+        private System.Windows.Forms.Label coinLabel;
     }
 }

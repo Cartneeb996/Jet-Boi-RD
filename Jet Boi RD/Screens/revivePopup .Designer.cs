@@ -33,6 +33,7 @@
             this.youFlewLabel = new System.Windows.Forms.Label();
             this.shopButton = new System.Windows.Forms.Button();
             this.reviveButton = new System.Windows.Forms.Button();
+            this.coindisp = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // playAgainButton
@@ -45,6 +46,7 @@
             this.playAgainButton.TabIndex = 3;
             this.playAgainButton.Text = "Play Again";
             this.playAgainButton.UseVisualStyleBackColor = false;
+            this.playAgainButton.Click += new System.EventHandler(this.HomeButton_Click);
             // 
             // homeButton
             // 
@@ -54,9 +56,9 @@
             this.homeButton.Name = "homeButton";
             this.homeButton.Size = new System.Drawing.Size(379, 120);
             this.homeButton.TabIndex = 1;
-            this.homeButton.Text = "Home";
+            this.homeButton.Text = "Quit";
             this.homeButton.UseVisualStyleBackColor = false;
-            this.homeButton.Click += new System.EventHandler(this.HomeButton_Click);
+            this.homeButton.Click += new System.EventHandler(this.exitButton_Click);
             // 
             // youFlewLabel
             // 
@@ -89,10 +91,20 @@
             this.reviveButton.Name = "reviveButton";
             this.reviveButton.Size = new System.Drawing.Size(379, 191);
             this.reviveButton.TabIndex = 0;
-            this.reviveButton.Text = "Buy Revive             250 coins";
-            this.reviveButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.reviveButton.Text = "     Buy Revive         250 coins  ";
             this.reviveButton.UseVisualStyleBackColor = false;
             this.reviveButton.Click += new System.EventHandler(this.Yes_Click);
+            // 
+            // coindisp
+            // 
+            this.coindisp.AutoSize = true;
+            this.coindisp.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coindisp.ForeColor = System.Drawing.Color.White;
+            this.coindisp.Location = new System.Drawing.Point(39, 43);
+            this.coindisp.Name = "coindisp";
+            this.coindisp.Size = new System.Drawing.Size(108, 37);
+            this.coindisp.TabIndex = 92;
+            this.coindisp.Text = "Coins:";
             // 
             // revivePopup
             // 
@@ -100,6 +112,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1435, 641);
+            this.Controls.Add(this.coindisp);
             this.Controls.Add(this.youFlewLabel);
             this.Controls.Add(this.homeButton);
             this.Controls.Add(this.shopButton);
@@ -110,6 +123,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "revivePopup";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -119,5 +133,6 @@
         private System.Windows.Forms.Label youFlewLabel;
         private System.Windows.Forms.Button shopButton;
         private System.Windows.Forms.Button reviveButton;
+        private System.Windows.Forms.Label coindisp;
     }
 }
