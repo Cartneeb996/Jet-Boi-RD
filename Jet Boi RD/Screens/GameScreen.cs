@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * Carter Neeb, Berkley Fair
+ * June 14 2019
+ * jetpack joyride esc game
+ */
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
