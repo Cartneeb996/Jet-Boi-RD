@@ -12,44 +12,39 @@ namespace Jet_Boi_RD.Screens
 {
     public partial class ShopScreen : UserControl
     {
-        public static bool switchS = false;
-
-
+        public static bool switchS = false; // for switching back to gamescreen
 
         public ShopScreen()
         {
             InitializeComponent();
             
-            teleporterButton.Visible = !GameScreen.mechs["teleporter"];
+            teleporterButton.Visible = !GameScreen.mechs["teleporter"]; // hides if bought
             teleportPriceLabel.Visible = !GameScreen.mechs["teleporter"];
 
-            gravitySuitButton.Visible = !GameScreen.mechs["gravity"];
+            gravitySuitButton.Visible = !GameScreen.mechs["gravity"]; // hides if bought
             gravSuitPriceLabel.Visible = !GameScreen.mechs["gravity"];
             
-            hogButton.Visible = !GameScreen.mechs["superJump"];
+            hogButton.Visible = !GameScreen.mechs["superJump"]; // hides if bought
             hogPriceLabel.Visible = !GameScreen.mechs["superJump"];
 
-            gravityBoiButton.Visible = !GameScreen.upgrades["ironBoi"];
+            gravityBoiButton.Visible = !GameScreen.upgrades["ironBoi"]; // hides if bought
             gravBoiPriceLabel.Visible = !GameScreen.upgrades["ironBoi"];
 
-            airBoiButton.Visible = !GameScreen.upgrades["jumpBoost"];
+            airBoiButton.Visible = !GameScreen.upgrades["jumpBoost"]; // hides if bought
             airBoiPriceLabel.Visible = !GameScreen.upgrades["jumpBoost"];
 
-            xRayBoiButton.Visible = !GameScreen.upgrades["xray"];
+            xRayBoiButton.Visible = !GameScreen.upgrades["xray"]; // hides if bought
             xRayPriceLabel.Visible = !GameScreen.upgrades["xray"];
 
-            jammerBoiButton.Visible = !GameScreen.upgrades["jammer"];
+            jammerBoiButton.Visible = !GameScreen.upgrades["jammer"]; // hides if bought
             jamerPriceLabel.Visible = !GameScreen.upgrades["jammer"];
 
-            coinLabel.Text = "Coins: " + GameScreen.coinScore;
-
-
-
+            coinLabel.Text = "Coins: " + GameScreen.coinScore; //displays currency
         }
 
         private void TeleporterButton_Click(object sender, EventArgs e)
         {
-            if (GameScreen.coinScore >= 500)
+            if (GameScreen.coinScore >= 500) // purchase, hide and remove coins
             {
                 GameScreen.coinScore -= 500;
                 GameScreen.mechs["teleporter"] = true;
@@ -60,9 +55,9 @@ namespace Jet_Boi_RD.Screens
             }
         }
 
-        private void GravitySuitButton_Click(object sender, EventArgs e)
+        private void GravitySuitButton_Click(object sender, EventArgs e) 
         {
-            if (GameScreen.coinScore >= 500)
+            if (GameScreen.coinScore >= 500)  // purchase, hide and remove coins
             {
                 GameScreen.coinScore -= 500;
                 GameScreen.mechs["gravity"] = true;
@@ -75,7 +70,7 @@ namespace Jet_Boi_RD.Screens
 
         private void HogButton_Click(object sender, EventArgs e)
         {
-            if (GameScreen.coinScore >= 500)
+            if (GameScreen.coinScore >= 500)  // purchase, hide and remove coins
             {
                 GameScreen.coinScore -= 500;
                 GameScreen.mechs["superJump"] = true;
@@ -88,13 +83,13 @@ namespace Jet_Boi_RD.Screens
 
         private void BackButton_Click(object sender, EventArgs e)
         {
-            Form1.switchScreen(this, "game");
+            Form1.switchScreen(this, "game"); // return to game
         }
 
         private void ShopScreen_Load(object sender, EventArgs e)
         {
 
-            if (switchS)
+            if (switchS) // switches back to game
             {
                 Form1.switchScreen(this, "game");
                 switchS = false;
@@ -103,7 +98,7 @@ namespace Jet_Boi_RD.Screens
 
         private void AirBoiButton_Click(object sender, EventArgs e)
         {
-            if (GameScreen.coinScore >= 200)
+            if (GameScreen.coinScore >= 200)  // purchase, hide and remove coins
             {
                 GameScreen.coinScore -= 200;
                 GameScreen.upgrades["jumpBoost"] = true;
@@ -116,7 +111,7 @@ namespace Jet_Boi_RD.Screens
 
         private void GravityBoiButton_Click(object sender, EventArgs e)
         {
-            if (GameScreen.coinScore >= 300)
+            if (GameScreen.coinScore >= 300)  // purchase, hide and remove coins
             {
                 GameScreen.coinScore -= 300;
                 GameScreen.upgrades["ironBoi"] = true;
@@ -129,7 +124,7 @@ namespace Jet_Boi_RD.Screens
 
         private void XRayBoiButton_Click(object sender, EventArgs e)
         {
-            if (GameScreen.coinScore >= 400)
+            if (GameScreen.coinScore >= 400)  // purchase, hide and remove coins
             {
                 GameScreen.coinScore -= 400;
                 GameScreen.upgrades["xray"] = true;
@@ -142,7 +137,7 @@ namespace Jet_Boi_RD.Screens
 
         private void JammerBoiButton_Click(object sender, EventArgs e)
         {
-            if (GameScreen.coinScore >= 500)
+            if (GameScreen.coinScore >= 500)  // purchase, hide and remove coins
             {
                 GameScreen.coinScore -= 500;
                 GameScreen.upgrades["jammer"] = true;

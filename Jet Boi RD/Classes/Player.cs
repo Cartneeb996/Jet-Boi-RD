@@ -12,7 +12,8 @@ namespace Jet_Boi_RD.Classes
         public int x, y;
         public Rectangle hb;
         public const int height = 120;
-        public const int width = 80;
+        public const int width = 80; //values for player's hitbox
+
         public Player(int _x, int _y)
         {
             x = _x;
@@ -20,12 +21,12 @@ namespace Jet_Boi_RD.Classes
             hb = new Rectangle(x, y, width, height);
 
         }
-        public void move(int spd)
+        public void move(int spd) // moves @spd
         {
             y += spd;
             hb.Y += spd;
         }
-        public void moveTo(int loc)
+        public void moveTo(int loc) //moves to loc
         {
             y = loc;
             hb.Y = loc;

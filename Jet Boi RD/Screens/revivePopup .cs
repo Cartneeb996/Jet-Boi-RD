@@ -16,11 +16,11 @@ namespace Jet_Boi_RD.Screens
         public  revivePopup()
         {
             InitializeComponent();
-            youFlewLabel.Text = "You Flew\n" + dist + "m\nFurthest Flown: " + GameScreen.maxDist/100 + "m";
-            coindisp.Text = "Coins: " + GameScreen.coinScore;
+            youFlewLabel.Text = "You Flew\n" + dist + "m\nFurthest Flown: " + GameScreen.maxDist/100 + "m"; // displays distance
+            coindisp.Text = "Coins: " + GameScreen.coinScore; //displays coins
         }
 
-        private void Yes_Click(object sender, EventArgs e)
+        private void Yes_Click(object sender, EventArgs e) //handled on gamescreen \/
         {
             DialogResult = DialogResult.Yes;
         }

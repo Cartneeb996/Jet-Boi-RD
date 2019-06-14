@@ -17,7 +17,7 @@ namespace Jet_Boi_RD.Screens
             InitializeComponent();
         }
 
-        private void Yes_Click(object sender, EventArgs e)
+        private void Yes_Click(object sender, EventArgs e) // these dialogs are used in gamescreen
         {
             DialogResult = DialogResult.Yes;
         }

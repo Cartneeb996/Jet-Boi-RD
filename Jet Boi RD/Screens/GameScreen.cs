@@ -44,7 +44,6 @@ namespace Jet_Boi_RD.Screens
 
         //things to remove
         Classes.laser laserToRemove;
-        Classes.coin coinToRemove;
         Classes.mechToken MTokenToRemove;
         Classes.rocket rocketToRemove;
 
@@ -109,9 +108,8 @@ namespace Jet_Boi_RD.Screens
         static List<Classes.rocket> rockets = new List<Classes.rocket>();
         List<Classes.laser> lasers = new List<Classes.laser>();
         List<Classes.coin> coins = new List<Classes.coin>();
-
-
         #endregion
+
         public GameScreen()
         {
             InitializeComponent();
@@ -144,25 +142,26 @@ namespace Jet_Boi_RD.Screens
                 mechs.Add("teleporter", false);
                 mechs.Add("gravity", false);
                 upgrades.Add("jumpBoost", false);
-                upgradesActv.Add("jumpBoost", false);
+                upgradesActv.Add("jumpBoost", false); //unimplemented
                 upgrades.Add("ironBoi", false);
-                upgradesActv.Add("ironBoi", false);
+                upgradesActv.Add("ironBoi", false); //unimplemented
                 upgrades.Add("xray", false);
-                upgradesActv.Add("xray", false);
+                upgradesActv.Add("xray", false); //unimplemented
                 upgrades.Add("jammer", false);
-                upgradesActv.Add("jammer", false);
-                Dictionary<string, bool> a = new Dictionary<string, bool>();
-                a.Add("magnet", false);
-                a.Add("golden", false);
-                Dictionary<string, bool> b = new Dictionary<string, bool>();
-                b.Add("magnet", false);
-                b.Add("golden", false);
-                Dictionary<string, bool> c = new Dictionary<string, bool>();
-                c.Add("magnet", false);
-                c.Add("golden", false);
-                mechUpgs.Add("teleporter", a);
-                mechUpgs.Add("superJump", b);
-                mechUpgs.Add("gravity", c);
+                upgradesActv.Add("jammer", false); //unimplemented
+                Dictionary<string, bool> a = new Dictionary<string, bool>(); //unimplemented
+                a.Add("magnet", false); //unimplemented
+                a.Add("golden", false); //unimplemented
+                Dictionary<string, bool> b = new Dictionary<string, bool>(); //unimplemented
+                b.Add("magnet", false); //unimplemented
+                b.Add("golden", false); //unimplemented
+                Dictionary<string, bool> c = new Dictionary<string, bool>(); //unimplemented
+                c.Add("magnet", false); //unimplemented
+                c.Add("golden", false); //unimplemented
+                mechUpgs.Add("teleporter", a); //unimplemented
+                mechUpgs.Add("superJump", b); //unimplemented
+                mechUpgs.Add("gravity", c); //unimplemented
+
                 Form1.start = true;
             }
             
@@ -369,100 +368,100 @@ namespace Jet_Boi_RD.Screens
             cloudX -= backgroundMoveSpd; // move cloud
             dist += backgroundMoveSpd; // add to dist
             actualDist = dist / 100; // actual distance travelled
-            if (endGame && tick % 15 == 0)
+
+            if (endGame && tick % 15 == 0) // for bounces and slowing down after being killed
             {
                 if (backgroundMoveSpd > 0) backgroundMoveSpd--;
-                else if (bounce < 10 && backgroundMoveSpd == 0) GameOver();
+                else if (bounce < 10 && backgroundMoveSpd == 0) GameOver(); // if fully stopped, gameover
             }
-            if (endGame && player.hb.Bottom >= this.Height && !bounceUp)
+
+            if (endGame && player.hb.Bottom >= this.Height && !bounceUp) // if player hits bottom, bounce up
             {
                 bounceUp = true;
                 bounce /= 2;
                 if (bounce < 15) bounce = 0;
             }
-            if (player.hb.Bottom > this.Height - bounce && bounceUp && endGame)
+
+            if (player.hb.Bottom > this.Height - bounce && bounceUp && endGame) // if less than bounce height, keep moving up
             {
                 player.move(-10);
                 airDownFrames = 0;
             }
             else
             {
-                bounceUp = false;
+                bounceUp = false; // turn around and fall down
 
             }
 
-            if (r.Next(0, 101) < coinChance && tick % 120 == 0 && !endGame)
+            if (r.Next(0, 101) < coinChance && tick % 120 == 0 && !endGame) // if game isnt over, and chance is met, generate a coin pattern
             {
                 generateCoin(r.Next(0, 3), r.Next(100, this.Height - 100));
             }
-            if (r.Next(0, 2) == 0 && tick % 1200 == 0 && !endGame && curntMech == "none")
+
+            if (r.Next(0, 2) == 0 && tick % 1200 == 0 && !endGame && curntMech == "none") // every 1200 ticks, have a chance to generate a mech token
             {
                 Classes.mechToken m = new Classes.mechToken(this.Width, r.Next(0, this.Height - 50));
-                if (!abort)
+
+                if (!abort) // if the player doesn't have the generated mech, stop the generation
                 {
                     MTokens.Add(m);
                 }
                 else abort = false;
             }
-            if (tick == 180)
+
+            if (tick == 180) // generates startup laser
             {
                 lasers.Add(new Classes.laser(this.Width, 10, midLaser, laserWidth, Properties.Resources.laserV));
             }
-            else if (tick % timeBtwnLasers == 0 && !endGame)
+            else if (tick % timeBtwnLasers == 0 && !endGame) //from here on out, generate a laser every timebtwnlaser ticks
             {
                 generateLaser(player.y);
             }
-            if (tick % 1200 == 0 && coinChance < 35 && !endGame) coinChance += 5;
 
-            if (tick % 240 == 0)
+            if (tick % 1200 == 0 && coinChance < 35 && !endGame) coinChance += 5; // every 1200 ticks increase chance to get coins
+
+            if (tick % 240 == 0) // move the cloud to front of screen
             {
                 cloudX = this.Width;
             }
-            if (tick % 550 == 0 && !endGame)
+
+            if (tick % 550 == 0 && !endGame) // movespeed increase every 550 ticks
             {
 
-                if (backgroundMoveSpd < 20)
+                if (backgroundMoveSpd < 20) // caps speed at 20
                 {
                     backgroundMoveSpd += 2;
-
                 }
-
-                //if (timeBtwnLasers > 15) timeBtwnLasers -= 15;
             }
-            if (tick % 240 == 0)
+
+            if (tick % 240 == 0) //every 240 ticks, decrease spawn timeout for lasers
             {
                 if (timeBtwnLasers > 20) timeBtwnLasers -= 15;
-                else
-                {
-                    //timeBtwnLasers = 5;
-                }
             }
-            if(tick % 600 == 0 && r.Next(0,3) == 0 && !upgrades["jammer"])
+
+            if(tick % 600 == 0 && r.Next(0,3) == 0 && !upgrades["jammer"]) // spawn rockets on 1/3 chance, every 600 ticks, and if you haven't bought jammer
             {
-                if (r.Next(0, 5) == 0)
+                if (r.Next(0, 5) == 0) // 1/5 chance to spawn a 5 rocket barrage
                 {
                     spawnBarrage = true;
                     barrageSpawns = 0;
                 }
 
-                Classes.rocket rc = new Classes.rocket(this.Width - 80, player.y + 25);
-                alert.Stop();
+                Classes.rocket rc = new Classes.rocket(this.Width - 80, player.y + 25); // create a rocket that follows the player
+
+                alert.Stop(); //play alert
                 alert.Play();
                 rockets.Add(rc);
-
-
             }
-            if(spawnBarrage && tick % 30 == 0 && barrageSpawns < 5)
+
+            if(spawnBarrage && tick % 30 == 0 && barrageSpawns < 5) // spawn barrage rockets every 30 ticks until 5 are spawned
             {
                 Classes.rocket rc = new Classes.rocket(this.Width - 80, player.y + 25);
                 rockets.Add(rc);
                 barrageSpawns++;
             }
             
-
-
-
-            switch (curntMech)
+            switch (curntMech) //based on mech, do different physics
             {
                 case "none":
                     standardGrounded();
@@ -482,24 +481,14 @@ namespace Jet_Boi_RD.Screens
                     break;
             }
 
-
-
-
-            if (endGame) up = false;
+            if (endGame) up = false; // stop the player from flying if they got hit
             Refresh();
         }
 
         private void GameScreen_KeyDown(object sender, KeyEventArgs e)
         {
-            
-            if (endGame)
-            {
-
-            }
-            if (e.KeyCode == Keys.Q) coinScore += 50;
-            else if (e.KeyCode == Keys.Space && !endGame && curntMech != "gravity")
-            {
-                
+            if (e.KeyCode == Keys.Space && !endGame && curntMech != "gravity") // if space, jump on ground, or fly in air
+            {     
                 if (grounded) // boost
                 {
                     grounded = false;
@@ -511,7 +500,7 @@ namespace Jet_Boi_RD.Screens
                     up = true;
                 }
             }
-            else if (e.KeyCode == Keys.P && !endGame)
+            else if (e.KeyCode == Keys.Escape && !endGame) //if pause button is pressed
             {
                 pausePopup rp = new pausePopup();
                 rp.Location = this.FindForm().Location;
@@ -520,7 +509,7 @@ namespace Jet_Boi_RD.Screens
 
 
 
-                if (result == DialogResult.Yes)
+                if (result == DialogResult.Yes) //if continuing
                 {
                     gameTimer.Enabled = true;
                     backgroundMoveSpd = spdStorage;
@@ -529,49 +518,46 @@ namespace Jet_Boi_RD.Screens
                     endGame = false;
                     lasers.Clear();
                 }
-                else if (result == DialogResult.No)
+                else if (result == DialogResult.No)// if quitting to shop
                 {
                     dist = 0;
                     actualDist = 0;
                     Refresh();
                     ShopScreen.switchS = true;
                     Form1.switchScreen(this, "shop");
-
-
                 }
             }
-
-
         }
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
+            //draw sky
             SolidBrush g = new SolidBrush(Color.Green);
             SolidBrush b = new SolidBrush(Color.SkyBlue);
             e.Graphics.FillRectangle(g, 0, this.Height - 100, this.Width, 100);
             e.Graphics.FillRectangle(b, 0, 0, this.Width, this.Height - 100);
+            e.Graphics.DrawImage(Properties.Resources.cloud, cloudX, 50, 100, 50); //clouds
 
-            e.Graphics.DrawRectangle(new Pen(Color.Black), cloudX, 50, 100, 50);
-            if(!started)
+            if(!started) // display startup message
             {
                 Font s = new Font(Font.FontFamily, 20);
 
-                e.Graphics.DrawString("Press Space to Play!", s, new SolidBrush(Color.Black), (this.Width - 300) / 2, 100);
+                e.Graphics.DrawString("Press Green to Play!", s, new SolidBrush(Color.Black), (this.Width - 300) / 2, 100);
             }
+            //decides animation frames
             if (!up && !grounded) frame = 9;
             if (up && curntMech != "superJump") frame = 8;
             if (grounded && !up && tick % 4 == 0) frame++;
             if (curntMech == "superJump" && tick % 4 == 0) frame++;
             if (endGame) frame = 10;
-            switch (curntMech)
-            {
-                
+
+            switch (curntMech) //draws image based on mech/character
+            {           
                 case "none":
                     frameCount = gifImage.GetFrameCount(dimension);
                     if (frame >= 8 && grounded && !up && !endGame) frame = 0;
                     e.Graphics.DrawImage(gifImage, player.hb);
-                    gifImage.SelectActiveFrame(dimension, frame);
-                    
+                    gifImage.SelectActiveFrame(dimension, frame);           
                     break;
                 case "teleporter":
                     e.Graphics.DrawImage(Properties.Resources.teleporter, player.hb.X, player.hb.Y);
@@ -581,45 +567,42 @@ namespace Jet_Boi_RD.Screens
                     if (frame >= 8 && !endGame) frame = 0;
                     e.Graphics.DrawImage(spImage, player.x, player.y);
                     spImage.SelectActiveFrame(spdimension, frame);
-
                     break;
                 case "gravity":
                     frameCount = gImage.GetFrameCount(dimension);
                     if (frame >= 8 && grounded && !up && !endGame) frame = 0;
                     e.Graphics.DrawImage(gImage, player.x, player.y);
                     gImage.SelectActiveFrame(gdimension, frame);
-
                     break;
-
             }
+          
+            if (curntMech == "teleporter") teleporterDraw(e.Graphics, teleporterMarkerY); // draws teleporter cursor
 
-            
-            
-            if (curntMech == "teleporter") teleporterDraw(e.Graphics, teleporterMarkerY);
             foreach (Classes.rocket l in rockets)
             {
-                if (l.launchingRocket && l.launchingTicks < 180)
+                if (l.launchingRocket && l.launchingTicks < 180) // displays warning, and tracks player
                 {
                     l.launchingTicks++;
                     l.hb.Y = player.y + 25;
                     l.y = player.y + 25;
                     e.Graphics.DrawImage(l.i, l.hb);
                 }
-                if(l.launchingTicks == 180 && l.launchingRocket)
+                if(l.launchingTicks == 180 && l.launchingRocket) // sets rocket to player location
                 {
                     l.hb.Y = player.y + 25;
                     l.y = player.y + 25;
                     l.launchingRocket = false;
                 }
-                if (!l.launchingRocket)
+                if (!l.launchingRocket) // shoots rocket at player
                 {                        
                     l.move();
                     e.Graphics.DrawImage(l.i, l.hb);
-                    if (l.hb.Right <= 0) rocketToRemove = l;
-                    if (player.hb.IntersectsWith(l.hb))
+
+                    if (l.hb.Right <= 0) rocketToRemove = l; // out of bounds, delete
+
+                    if (player.hb.IntersectsWith(l.hb)) // if hits player, kill player and delete
                     {
-                        //GameOver();
-                        if (!endGame && curntMech == "none")
+                        if (!endGame && curntMech == "none") // kill
                         {
                             endGame = true;
                             death.Stop();
@@ -627,28 +610,28 @@ namespace Jet_Boi_RD.Screens
                             spdStorage = backgroundMoveSpd;
                             bounce = (this.Height - player.y) / 2;
                         }
-                        else if (curntMech != "none")
+                        else if (curntMech != "none") // destroy mech instead of killing
                         {
                             broken.Stop();
                             broken.Play();
-                            toClearLsers = true;
+                            toClearLsers = true; // clears all objects
                             grounded = false;
                             curntMech = "none";
-
                         }
                     }
                 }
             }
 
-            foreach (Classes.laser l in lasers)
+            foreach (Classes.laser l in lasers) 
             {
                 l.move();
-                e.Graphics.DrawImage(l.i, l.hb);
-                if (l.hb.Right <= 0) laserToRemove = l;
-                if (player.hb.IntersectsWith(l.hb))
+                e.Graphics.DrawImage(l.i, l.hb); //display laser
+
+                if (l.hb.Right <= 0) laserToRemove = l; // remove if out of bounds
+
+                if (player.hb.IntersectsWith(l.hb)) //if hits player
                 {
-                    //GameOver();
-                    if (!endGame && curntMech == "none")
+                    if (!endGame && curntMech == "none")// kill player
                     {
                         death.Stop();
                         death.Play();
@@ -656,7 +639,7 @@ namespace Jet_Boi_RD.Screens
                         endGame = true;
                         bounce = (this.Height - player.y) / 2;
                     }
-                    else if (curntMech != "none")
+                    else if (curntMech != "none") //destroy mech
                     {
                         broken.Stop();
                         broken.Play();
@@ -666,16 +649,19 @@ namespace Jet_Boi_RD.Screens
                     }
                 }
             }
+
             if (toClearLsers)
             {
                 lasers.Clear();
                 rockets.Clear();
                 toClearLsers = false;
             }
-            List<Classes.coin> delete = new List<Classes.coin>();
+
+            List<Classes.coin> delete = new List<Classes.coin>(); // coins to delete
+
             foreach (Classes.coin c in coins)
             {
-                if (c.hb.IntersectsWith(player.hb))
+                if (c.hb.IntersectsWith(player.hb)) // if player hits coins
                 {
                     coinScore++;
                     //coinToRemove = c;
@@ -683,22 +669,22 @@ namespace Jet_Boi_RD.Screens
                 }
                 else
                 {
-                    c.move();
+                    c.move(); // move and draw
                     e.Graphics.FillEllipse(coinBrush, c.hb);
-                    if (c.hb.Right <= 0)
+
+                    if (c.hb.Right <= 0) // if ooB, delete
                     {
-                        //coinToRemove = c;
                         delete.Add(c);
                     }
                 }
             }
+
             foreach (Classes.mechToken m in MTokens)
-            {
-                
-                if (m.hb.IntersectsWith(player.hb))
+            {   
+                if (m.hb.IntersectsWith(player.hb)) //if player hits mech token
                 {
                     MTokenToRemove = m;
-                    curntMech = m.type;
+                    curntMech = m.type; // set player mech to token type
                     lasers.Clear();
                     rockets.Clear();
                     broken.Play();
@@ -706,17 +692,20 @@ namespace Jet_Boi_RD.Screens
                 else
                 {
                     m.move();
-                    e.Graphics.FillRectangle(coinBrush, m.hb);
-                    if (m.hb.Right <= 0)
+                    e.Graphics.FillRectangle(coinBrush, m.hb); //move and draw
+
+                    if (m.hb.Right <= 0) // if ooB, delete
                     {
                         MTokenToRemove = m;
 
                     }
                 }
-                if (upgrades["xray"])
+
+                if (upgrades["xray"]) // if xray is bought, you can see the type of mech token
                 {
                     string s = "";
                     Font f = new Font(Font.FontFamily, 20);
+
                     if (m.type == "teleporter")
                     {
                         s = "T";
@@ -729,13 +718,16 @@ namespace Jet_Boi_RD.Screens
                     {
                         s = "G";
                     }
+
                     e.Graphics.DrawString(s, f, new SolidBrush(Color.Black), m.hb.X + 10, m.hb.Y + 10);
                 }
             }
-            Font fr = new Font("Arial", 16);
-            
+            //draws coin and distance
+            Font fr = new Font("Arial", 16);          
             e.Graphics.DrawString("Coins " + coinScore, fr, new SolidBrush(Color.Black), 0, 10);
             e.Graphics.DrawString("Distance " + actualDist +"m", fr, new SolidBrush(Color.Black), 0, 30);
+            
+            //removes objects
             RemoveLaser(laserToRemove);
             RemoveCoin(delete);
             RemoveMToken(MTokenToRemove);
@@ -744,14 +736,17 @@ namespace Jet_Boi_RD.Screens
             laserToRemove = null;
         }
 
+        //removing func
         public void RemoveLaser(Classes.laser l)
         {
             lasers.Remove(l);
         }
+
         public void RemoveCoin(Classes.coin l)
         {
             coins.Remove(l);
         }
+
         public void RemoveCoin(List<Classes.coin> l)
         {
             foreach (Classes.coin c in l)
@@ -759,6 +754,7 @@ namespace Jet_Boi_RD.Screens
                 coins.Remove(c);
             }
         }
+
         public void RemoveMToken(Classes.mechToken m)
         {
             MTokens.Remove(m);
@@ -768,7 +764,7 @@ namespace Jet_Boi_RD.Screens
             rockets.Remove(r);
         }
 
-        private void GameScreen_Load(object sender, EventArgs e)
+        private void GameScreen_Load(object sender, EventArgs e) // when gamescreen is loaded, reset player and play music
         {
             player.y = this.Height - pheight;
             player.hb.Y = this.Height - pheight;
@@ -777,33 +773,36 @@ namespace Jet_Boi_RD.Screens
             music.MediaEnded += music_Loop;
 
         }
-        private void music_Loop(object sender, EventArgs e)
+
+        private void music_Loop(object sender, EventArgs e) // loops music
         {
             music.Stop();
             music.Play();
         }
-        private void GameScreen_KeyUp(object sender, KeyEventArgs e)
+
+        private void GameScreen_KeyUp(object sender, KeyEventArgs e) // mainly used for teleporter
         {
             up = false;
             keydown = false;
         }
 
-        private void generateCoin(int pattern, int pos)
+        private void generateCoin(int pattern, int pos) // generates coins based on pattern and pos
         {
             List<Classes.coin> c = new List<Classes.coin>();
+
             switch (pattern)
             {
-                case 0:
+                case 0: //creates block of coins
                     for (int x = 0; x < 5; x++)
                     {
                         for (int y = pos; y < pos + 70; y += 10)
                         {
-                            c.Add(new Classes.coin(this.Width + x * 10, y));
+                            c.Add(new Classes.coin(this.Width + x * 10, y)); 
                         }
                     }
 
                     break;
-                case 1:
+                case 1: //creates check mark
                     c.Add(new Classes.coin(this.Width, pos - 12));
                     for (int x = 0; x > -5; x--)
                     {
@@ -812,7 +811,7 @@ namespace Jet_Boi_RD.Screens
 
                     }
                     break;
-                case 2:
+                case 2: // creates sin wave
                     int n;
                     n = r.Next(20, 100);
                     for (int x = 0; x < 18; x++)
@@ -825,28 +824,31 @@ namespace Jet_Boi_RD.Screens
                     break;
                 case 4:
                     break;
-            }
-            foreach (Classes.coin coin in c)
+            } 
+
+            foreach (Classes.coin coin in c) // adds coins to actual list
             {
                 coins.Add(coin);
             }
         }
 
-        private void generateLaser(int py)
+        private void generateLaser(int py) //takes player y, and spawns laser
         {
             int w = 0;
             int l = 0;
             int y = 0;
+
             Image i = Properties.Resources.laserV;
+
             switch (r.Next(0, 2))
             {
-                case 0: // vert rect
+                case 0: // vert laser
                     i = Properties.Resources.laserV;
+
                     switch (r.Next(0, 3))
                     {
                         case 0:
-                            l = smallLaser;
-                            
+                            l = smallLaser;         
                             break;
                         case 1:
                             l = midLaser;
@@ -855,12 +857,15 @@ namespace Jet_Boi_RD.Screens
                             l = longLaser;
                             break;
                     }
-                    if (py <= l / 2) y = 0;
+
+                    if (py <= l / 2) y = 0; // if spawn above screen, place at top instead of ooB
                     else y = py - l / 2;
+
                     w = laserWidth;
                     break;
-                case 1: // horiz rect
+                case 1: // horiz laser
                     i = Properties.Resources.laserH;
+
                     switch (r.Next(0, 3))
                     {
                         case 0:
@@ -873,42 +878,44 @@ namespace Jet_Boi_RD.Screens
                             w = longLaser;
                             break;
                     }
-                    if (py <= w / 2) y = 0;
+
+                    if (py <= w / 2) y = 0; 
                     else y = py - w / 2;
+
                     l = laserWidth;
                     break;
             }
-            if (py <= l) y = 0;
+            if (py <= l) y = 0; // if spawn above screen, place at top instead of ooB
             else y = py - l / 2;
 
             lasers.Add(new Classes.laser(this.Width, y, l, w, i));
         }
 
-        public void teleporterMove(int y)
+        public void teleporterMove(int y) //teleporter move func
         {
             player.moveTo(y);
         }
 
-        public void teleporterDraw(Graphics g, int y)
+        public void teleporterDraw(Graphics g, int y) // draws cursor
         {
-            if (y >= this.Height - pheight)
+            if (y >= this.Height - pheight) // goes up,
             {
                 teleporterUp = true;
             }
-            if (y < 0)
+            if (y < 0) //then down
             {
                 teleporterUp = false;
             }
 
 
-            if (teleporterUp) y -= 10;
-            else y += 10;
+            if (teleporterUp) y -= 10; // up
+            else y += 10; //down
 
-            g.DrawRectangle(new Pen(Color.Black), player.x, y, pwidth, pheight);
+            g.DrawRectangle(new Pen(Color.Black), player.x, y, pwidth, pheight); //draw cursor
             teleporterMarkerY = y;
         }
 
-        private void GameScreen_KeyPress(object sender, KeyPressEventArgs e)
+        private void GameScreen_KeyPress(object sender, KeyPressEventArgs e) //used for teleporter and gravity so they can't cheat
         {
             if (e.KeyChar == (char)Keys.Space && !keydown)
             {
@@ -927,18 +934,22 @@ namespace Jet_Boi_RD.Screens
                         airDownFrames = 0;
                         break;
                 }
-                keydown = true;
+
+                keydown = true; // ensures you can't press and hold space
             }
-            if (e.KeyChar == (char)Keys.Space && !started)
+            if (e.KeyChar == (char)Keys.Space && !started) // for when the game is waiting for user to press space to start
             {
                 started = true;
                 gameTimer.Enabled = true;
             }
 
         }
+
         #region gravities
-        public void standardGav()
+        public void standardGav() // the standard gravity
         {
+            //down: lower means stronger pull down
+            //airDownFrames: no frames the player isn't going up (for gravity affect)
             if (player.hb.Bottom < this.Height) // if player is not touching bottom of screen
             {
                 if (!up)
@@ -946,91 +957,58 @@ namespace Jet_Boi_RD.Screens
                     int down = 20;
                     if (upgrades["ironBoi"]) down = 10;
                    
-                    if (player.hb.Bottom < this.Height)
+                    if (player.hb.Bottom < this.Height) //if not touching bottom, gravity
                     {
                         player.move(2 + (int)Math.Floor(Math.Pow(airDownFrames, 2) / down));
                     }
-                    else
-                    {
-                        player.hb.Y = this.Height - pheight;
-                    }
-
 
                     if (airDownFrames < 15) airDownFrames++;
                 }
-                /*
-                 * (int)Math.Floor(Math.Pow(airDownFrames, 2) / 20);
-                if( airDownFrames < 13) airDownFrames++;
-                 */
             }
         }
 
-        public void GsuitGav()
+        public void GsuitGav() //same gravity as normal, it just flips the direction of pull when space is pressed
         {
             if (gravDown)
             {
-                if (player.hb.Bottom < this.Height) // if player is not touching bottom of screen
+                if (player.hb.Bottom < this.Height) // if player is not touching bottom of screen (grav = down)
                 {
-
-
                     if (player.hb.Bottom < this.Height)
                     {
                         player.move(2 + (int)Math.Floor(Math.Pow(airDownFrames, 2) / 30));
                     }
 
-
-
                     if (airDownFrames < 20) airDownFrames++;
-
-                    /*
-                     * (int)Math.Floor(Math.Pow(airDownFrames, 2) / 20);
-                    if( airDownFrames < 13) airDownFrames++;
-                     */
                 }
                 else airDownFrames = 0;
             }
             else
             {
-                if (player.hb.Top > 0) // if player is not touching bottom of screen
+                if (player.hb.Top > 0) // if player is not touching bottom of screen (grav = up)
                 {
-
-
                     if (player.hb.Top > 0)
                     {
                         player.move(-(2 + (int)Math.Floor(Math.Pow(airDownFrames, 2) / 30)));
                     }
 
-
-
                     if (airDownFrames < 20) airDownFrames++;
-
-                    /*
-                     * (int)Math.Floor(Math.Pow(airDownFrames, 2) / 20);
-                    if( airDownFrames < 13) airDownFrames++;
-                     */
                 }
                 else airDownFrames = 0;
             }
         }
 
-        public void superJumpGav()
+        public void superJumpGav() // same as normal, but the player "floats" more on downfall
         {
             if (player.hb.Bottom < this.Height) // if player is not touching bottom of screen
             {
-
-
                 if (player.hb.Bottom < this.Height)
                 {
                     player.move(1 + (int)Math.Floor(Math.Pow(airDownFrames, 2) / 20));
                 }
 
                 if (upFrames > 0 && !jumping) upFrames--;
-                if (airDownFrames < 12 && !grounded) airDownFrames++;
 
-                /*
-                 * (int)Math.Floor(Math.Pow(airDownFrames, 2) / 20);
-                if( airDownFrames < 13) airDownFrames++;
-                 */
+                if (airDownFrames < 12 && !grounded) airDownFrames++;
             }
             else
             {
@@ -1042,23 +1020,19 @@ namespace Jet_Boi_RD.Screens
         #endregion
 
         #region ups
-        public void standardUp()
+        public void standardUp() // controlls the players up movement
         {
-            if (up)
+            if (up) // if player is pressing space, go up 
             {
                 if (player.hb.Y > 0)
-                {
-                    int m = -8;
-                    if(upgrades["jumpBoost"])
-                    {
-                        m = -10;
-                    }
-                    player.move(m);
+                {                 
+                    player.move(-8);
                 }
-                if (airDownFrames > 0) airDownFrames -= 2;
+                if (airDownFrames > 0) airDownFrames -= 2; // decrease down frames to simulate inertia
             }
         }
-        public void superJumpUp()
+
+        public void superJumpUp() //makes the jump more powerful, and gradual instead of instantanous
         {
             if (jumping && upFrames < 20)
             {
@@ -1072,19 +1046,27 @@ namespace Jet_Boi_RD.Screens
             else jumping = false;
         }
         #endregion
+
         #region jumps
-        public void standardJump()
+        public void standardJump() // player jumps if on ground
         {
             if (jumping)
             {
-                player.move(-30);
+                int m = -30;
+
+                if (upgrades["jumpBoost"]) // if upgrade purch, jump higher
+                {
+                    m = -40;
+                }
+
+                player.move(m);
                 jumping = false;
             }
         }
 
 
         #endregion
-        public void standardGrounded()
+        public void standardGrounded() // this is used to tell if player touches the bottom (aka ground)
         {
             if (player.hb.Bottom >= this.Height) // if player is touching bottom of screen
             {
