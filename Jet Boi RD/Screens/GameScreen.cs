@@ -738,7 +738,6 @@ namespace Jet_Boi_RD.Screens
             RemoveCoin(delete);
             RemoveMToken(MTokenToRemove);
             MTokenToRemove = null;
-            coinToRemove = null;
             laserToRemove = null;
         }
 
