@@ -518,11 +518,6 @@ namespace Jet_Boi_RD.Screens
                 if (result == DialogResult.Yes) //if continuing
                 {
                     gameTimer.Enabled = true;
-                    backgroundMoveSpd = spdStorage;
-                    timeBtwnLasers = 120;
-                    coinScore -= 250;
-                    endGame = false;
-                    lasers.Clear();
                 }
                 else if (result == DialogResult.No)// if quitting to shop
                 {
