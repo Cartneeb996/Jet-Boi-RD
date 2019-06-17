@@ -360,6 +360,7 @@ namespace Jet_Boi_RD.Screens
                 {
                     FindForm().Close(); // close game
                 }
+                music.Stop();
             }
             else //obselete
             {
@@ -527,6 +528,7 @@ namespace Jet_Boi_RD.Screens
                     ShopScreen.switchS = true;
                     Form1.switchScreen(this, "shop");
                 }
+                music.Stop();
             }
         }
 
